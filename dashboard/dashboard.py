@@ -16,6 +16,9 @@ st.markdown("""
 st.markdown("<h1 style='color:black;'>Dashboard Analisis E-Commerce</h1>", unsafe_allow_html=True)
 
 df = pd.read_csv('dashboard/main_data.csv')
+
+df = df.head(30000)
+
 df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
 
 st.sidebar.header("Informasi Dashboard")
