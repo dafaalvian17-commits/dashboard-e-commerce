@@ -4,39 +4,30 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Dashboard E-Commerce", layout="wide")
 
-st.markdown("""
-<style>
-.stApp {
-    background-color: #f5f5f5;
-    color: #000000;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.markdown("<h1 style='color:black;'>Dashboard Analisis E-Commerce</h1>", unsafe_allow_html=True)
 
 df = pd.read_csv('dashboard/main_data.csv')
-
 df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
 
-st.sidebar.header("Filter Data")
+st.sidebar.header("Informasi Dashboard")
+
+st.sidebar.write("""
+Dashboard ini digunakan untuk menganalisis data transaksi e-commerce berdasarkan:
+- Produk terlaris
+- Tren transaksi
+- Pelanggan paling aktif
+- Kategori produk terlaris
+
+Gunakan filter tanggal untuk melihat perubahan data dalam periode tertentu.
+""")
+
+st.sidebar.markdown("---")
 
 min_date = df['order_purchase_timestamp'].min()
 max_date = df['order_purchase_timestamp'].max()
 
-start_date = st.sidebar.date_input(
-    "Start Date",
-    value=min_date,
-    min_value=min_date,
-    max_value=max_date
-)
-
-end_date = st.sidebar.date_input(
-    "End Date",
-    value=max_date,
-    min_value=min_date,
-    max_value=max_date
-)
+start_date = st.sidebar.date_input("Start Date", min_date)
+end_date = st.sidebar.date_input("End Date", max_date)
 
 df = df[
     (df['order_purchase_timestamp'] >= pd.to_datetime(start_date)) &
@@ -65,7 +56,7 @@ category_sales = df.groupby('product_category_name')['order_item_id'].count().so
 
 st.header("Analisis Produk")
 
-fig1, ax1 = plt.subplots(figsize=(10,5))
+fig1, ax1 = plt.subplots(figsize=(8,4))
 product_sales.plot(kind='bar', ax=ax1)
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.5)
@@ -74,7 +65,7 @@ st.pyplot(fig1)
 
 st.header("Analisis Transaksi")
 
-fig2, ax2 = plt.subplots(figsize=(10,5))
+fig2, ax2 = plt.subplots(figsize=(8,4))
 monthly_orders.plot(ax=ax2, marker='o')
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.5)
@@ -83,7 +74,7 @@ st.pyplot(fig2)
 
 st.header("Analisis Pelanggan")
 
-fig3, ax3 = plt.subplots(figsize=(10,5))
+fig3, ax3 = plt.subplots(figsize=(8,4))
 top_customers.plot(kind='bar', ax=ax3)
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.5)
@@ -92,7 +83,7 @@ st.pyplot(fig3)
 
 st.header("Kategori Produk")
 
-fig4, ax4 = plt.subplots(figsize=(10,5))
+fig4, ax4 = plt.subplots(figsize=(8,4))
 category_sales.plot(kind='bar', ax=ax4)
 plt.xticks(rotation=45)
 plt.grid(axis='y', linestyle='--', alpha=0.5)
