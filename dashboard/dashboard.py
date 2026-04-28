@@ -62,13 +62,24 @@ else:
 st.header("Analisis Produk")
 
 fig1, ax1 = plt.subplots(figsize=(8,4))
-bars1 = ax1.barh(product_sales.index[::-1], product_sales.values[::-1])
 
-for i, v in enumerate(product_sales.values[::-1]):
-    ax1.text(v + 2, i, str(v), va='center')
+labels = product_sales.index.str[:8]
+values = product_sales.values
 
-ax1.set_xlabel("Jumlah Terjual")
-ax1.set_ylabel("Product ID")
+bars = ax1.bar(labels, values)
+
+ax1.set_ylabel("Jumlah Terjual")
+ax1.set_xlabel("Product ID")
+
+plt.xticks(rotation=45, ha='right')
+
+y_max = values.max()
+ax1.set_ylim(0, y_max * 1.15)
+
+for bar in bars:
+    yval = bar.get_height()
+    ax1.text(bar.get_x() + bar.get_width()/2, yval + y_max*0.02, int(yval),
+             ha='center', va='bottom')
 
 plt.tight_layout()
 st.pyplot(fig1)
@@ -90,13 +101,24 @@ st.pyplot(fig2)
 st.header("Analisis Pelanggan")
 
 fig3, ax3 = plt.subplots(figsize=(8,4))
-bars2 = ax3.barh(top_customers.index[::-1], top_customers.values[::-1])
 
-for i, v in enumerate(top_customers.values[::-1]):
-    ax3.text(v + 0.5, i, str(v), va='center')
+labels2 = top_customers.index.str[:8]
+values2 = top_customers.values
 
-ax3.set_xlabel("Jumlah Transaksi")
-ax3.set_ylabel("Customer ID")
+bars2 = ax3.bar(labels2, values2)
+
+ax3.set_ylabel("Jumlah Transaksi")
+ax3.set_xlabel("Customer ID")
+
+plt.xticks(rotation=45, ha='right')
+
+y_max2 = values2.max()
+ax3.set_ylim(0, y_max2 * 1.15)
+
+for bar in bars2:
+    yval = bar.get_height()
+    ax3.text(bar.get_x() + bar.get_width()/2, yval + y_max2*0.02, int(yval),
+             ha='center', va='bottom')
 
 plt.tight_layout()
 st.pyplot(fig3)
@@ -104,13 +126,24 @@ st.pyplot(fig3)
 st.header("Kategori Produk")
 
 fig4, ax4 = plt.subplots(figsize=(8,4))
-bars3 = ax4.barh(category_sales.index[::-1], category_sales.values[::-1])
 
-for i, v in enumerate(category_sales.values[::-1]):
-    ax4.text(v + 2, i, str(v), va='center')
+labels3 = category_sales.index
+values3 = category_sales.values
 
-ax4.set_xlabel("Jumlah Terjual")
-ax4.set_ylabel("Kategori")
+bars3 = ax4.bar(labels3, values3)
+
+ax4.set_ylabel("Jumlah Terjual")
+ax4.set_xlabel("Kategori")
+
+plt.xticks(rotation=45, ha='right')
+
+y_max3 = values3.max()
+ax4.set_ylim(0, y_max3 * 1.15)
+
+for bar in bars3:
+    yval = bar.get_height()
+    ax4.text(bar.get_x() + bar.get_width()/2, yval + y_max3*0.02, int(yval),
+             ha='center', va='bottom')
 
 plt.tight_layout()
 st.pyplot(fig4)
