@@ -17,13 +17,16 @@ st.markdown("<h1 style='color:black;'>Dashboard Analisis E-Commerce</h1>", unsaf
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv('dashboard/main_data.csv')
+    import os
+    base_path = os.path.dirname(__file__)
+    data_path = os.path.join(base_path, 'main_data.csv')
+
+    df = pd.read_csv(data_path)
     df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
     df['year'] = df['order_purchase_timestamp'].dt.year
     return df
 
 df = load_data()
-
 st.sidebar.header("Informasi Dashboard")
 st.sidebar.write("Dashboard ini menampilkan analisis data e-commerce.")
 st.sidebar.write("Data mencakup transaksi, pelanggan, dan produk.")
