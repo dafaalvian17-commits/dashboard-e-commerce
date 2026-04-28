@@ -15,24 +15,33 @@ st.markdown("""
 
 st.markdown("<h1 style='color:black;'>Dashboard Analisis E-Commerce</h1>", unsafe_allow_html=True)
 
-df = pd.read_csv('dashboard/main_data.csv', nrows=25000)
+df = pd.read_csv('dashboard/main_data.csv')
 
 df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
 
-st.sidebar.header("Informasi Dashboard")
-st.sidebar.write("Dashboard ini menampilkan analisis data e-commerce.")
+st.sidebar.header("Filter Data")
 
-df['year'] = df['order_purchase_timestamp'].dt.year
+min_date = df['order_purchase_timestamp'].min()
+max_date = df['order_purchase_timestamp'].max()
 
-year_list = sorted(df['year'].unique())
-year_options = ["All"] + year_list
+start_date = st.sidebar.date_input(
+    "Start Date",
+    value=min_date,
+    min_value=min_date,
+    max_value=max_date
+)
 
-selected_year = st.sidebar.selectbox("Pilih Tahun", year_options)
+end_date = st.sidebar.date_input(
+    "End Date",
+    value=max_date,
+    min_value=min_date,
+    max_value=max_date
+)
 
-if selected_year != "All":
-    df = df[df['year'] == selected_year]
-
-st.write(f"Menampilkan data untuk: {selected_year}")
+df = df[
+    (df['order_purchase_timestamp'] >= pd.to_datetime(start_date)) &
+    (df['order_purchase_timestamp'] <= pd.to_datetime(end_date))
+]
 
 st.sidebar.markdown("---")
 st.sidebar.write("Total Data:", len(df))
@@ -59,6 +68,7 @@ st.header("Analisis Produk")
 fig1, ax1 = plt.subplots(figsize=(10,5))
 product_sales.plot(kind='bar', ax=ax1)
 plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 st.pyplot(fig1)
 
@@ -67,6 +77,7 @@ st.header("Analisis Transaksi")
 fig2, ax2 = plt.subplots(figsize=(10,5))
 monthly_orders.plot(ax=ax2, marker='o')
 plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 st.pyplot(fig2)
 
@@ -75,6 +86,7 @@ st.header("Analisis Pelanggan")
 fig3, ax3 = plt.subplots(figsize=(10,5))
 top_customers.plot(kind='bar', ax=ax3)
 plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 st.pyplot(fig3)
 
@@ -83,6 +95,7 @@ st.header("Kategori Produk")
 fig4, ax4 = plt.subplots(figsize=(10,5))
 category_sales.plot(kind='bar', ax=ax4)
 plt.xticks(rotation=45)
+plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 st.pyplot(fig4)
 
