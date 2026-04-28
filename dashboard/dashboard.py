@@ -1,35 +1,49 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
 st.set_page_config(page_title="Dashboard E-Commerce", layout="wide")
 
 st.markdown("""
-    <style>
-    .stApp {
-        background-color: #f5f5f5;
-        color: #000000;
-    }
-    </style>
+<style>
+.stApp {
+    background-color: #f5f5f5;
+    color: #000000;
+}
+</style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='color:black;'>Dashboard Analisis E-Commerce</h1>", unsafe_allow_html=True)
+st.title("Dashboard Analisis E-Commerce")
+
+st.write("APP STARTED")
 
 @st.cache_data
 def load_data():
-    import os
     base_path = os.path.dirname(__file__)
-    data_path = os.path.join(base_path, 'main_data.csv')
+    data_path = os.path.join(base_path, "main_data.csv")
 
     df = pd.read_csv(data_path)
+
+    df = df[[
+        'order_id',
+        'customer_unique_id',
+        'product_id',
+        'order_item_id',
+        'order_purchase_timestamp',
+        'product_category_name'
+    ]]
+
     df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
     df['year'] = df['order_purchase_timestamp'].dt.year
+
     return df
 
 df = load_data()
-st.sidebar.header("Informasi Dashboard")
-st.sidebar.write("Dashboard ini menampilkan analisis data e-commerce.")
-st.sidebar.write("Data mencakup transaksi, pelanggan, dan produk.")
+
+st.write("DATA LOADED", df.shape)
+
+st.sidebar.header("Filter")
 
 min_date = df['order_purchase_timestamp'].min()
 max_date = df['order_purchase_timestamp'].max()
@@ -37,8 +51,14 @@ max_date = df['order_purchase_timestamp'].max()
 start_date = st.sidebar.date_input("Start Date", min_date)
 end_date = st.sidebar.date_input("End Date", max_date)
 
-df = df[(df['order_purchase_timestamp'] >= pd.to_datetime(start_date)) &
-        (df['order_purchase_timestamp'] <= pd.to_datetime(end_date))]
+st.write("BEFORE FILTER")
+
+df = df[
+    (df['order_purchase_timestamp'] >= pd.to_datetime(start_date)) &
+    (df['order_purchase_timestamp'] <= pd.to_datetime(end_date))
+]
+
+st.write("AFTER FILTER", df.shape)
 
 st.sidebar.markdown("---")
 st.sidebar.write("Total Data:", len(df))
@@ -59,7 +79,6 @@ category_sales = df.groupby('product_category_name')['order_item_id'].count().so
 
 st.header("Analisis Produk")
 
-st.subheader("Top 10 Produk Terlaris")
 fig1, ax1 = plt.subplots(figsize=(10,5))
 product_sales.plot(kind='bar', ax=ax1)
 ax1.set_ylabel("Jumlah Terjual")
@@ -68,11 +87,7 @@ plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 st.pyplot(fig1)
 
-st.markdown("---")
-
 st.header("Analisis Transaksi")
-
-st.subheader("Tren Transaksi")
 
 if (end_date - start_date).days <= 31:
     temp = df.groupby(df['order_purchase_timestamp'].dt.date)['order_id'].nunique()
@@ -88,11 +103,8 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(fig2)
 
-st.markdown("---")
-
 st.header("Analisis Pelanggan")
 
-st.subheader("Top 10 Pelanggan")
 fig3, ax3 = plt.subplots(figsize=(10,5))
 top_customers.plot(kind='bar', ax=ax3)
 ax3.set_ylabel("Jumlah Transaksi")
@@ -101,9 +113,8 @@ plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.tight_layout()
 st.pyplot(fig3)
 
-st.markdown("---")
+st.header("Kategori Produk")
 
-st.subheader("Top 10 Kategori Produk")
 fig4, ax4 = plt.subplots(figsize=(10,5))
 category_sales.plot(kind='bar', ax=ax4)
 ax4.set_ylabel("Jumlah Terjual")
