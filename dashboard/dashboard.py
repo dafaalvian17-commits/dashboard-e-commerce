@@ -15,15 +15,12 @@ st.markdown("""
 
 st.markdown("<h1 style='color:black;'>Dashboard Analisis E-Commerce</h1>", unsafe_allow_html=True)
 
-df = pd.read_csv('dashboard/main_data.csv')
-
-df = df.head(30000)
+df = pd.read_csv('dashboard/main_data.csv', nrows=25000)
 
 df['order_purchase_timestamp'] = pd.to_datetime(df['order_purchase_timestamp'])
 
 st.sidebar.header("Informasi Dashboard")
 st.sidebar.write("Dashboard ini menampilkan analisis data e-commerce.")
-st.sidebar.write("Data mencakup transaksi, pelanggan, dan produk.")
 
 df['year'] = df['order_purchase_timestamp'].dt.year
 
@@ -61,9 +58,7 @@ st.header("Analisis Produk")
 
 fig1, ax1 = plt.subplots(figsize=(10,5))
 product_sales.plot(kind='bar', ax=ax1)
-ax1.set_ylabel("Jumlah Terjual")
-ax1.tick_params(axis='x', rotation=45, labelsize=8)
-plt.grid(axis='y', linestyle='--', alpha=0.5)
+plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(fig1)
 
@@ -71,8 +66,6 @@ st.header("Analisis Transaksi")
 
 fig2, ax2 = plt.subplots(figsize=(10,5))
 monthly_orders.plot(ax=ax2, marker='o')
-ax2.set_ylabel("Jumlah Transaksi")
-plt.grid(axis='y', linestyle='--', alpha=0.5)
 plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(fig2)
@@ -81,9 +74,7 @@ st.header("Analisis Pelanggan")
 
 fig3, ax3 = plt.subplots(figsize=(10,5))
 top_customers.plot(kind='bar', ax=ax3)
-ax3.set_ylabel("Jumlah Transaksi")
-ax3.tick_params(axis='x', rotation=45, labelsize=8)
-plt.grid(axis='y', linestyle='--', alpha=0.5)
+plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(fig3)
 
@@ -91,9 +82,7 @@ st.header("Kategori Produk")
 
 fig4, ax4 = plt.subplots(figsize=(10,5))
 category_sales.plot(kind='bar', ax=ax4)
-ax4.set_ylabel("Jumlah Terjual")
-ax4.tick_params(axis='x', rotation=45, labelsize=8)
-plt.grid(axis='y', linestyle='--', alpha=0.5)
+plt.xticks(rotation=45)
 plt.tight_layout()
 st.pyplot(fig4)
 
